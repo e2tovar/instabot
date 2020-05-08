@@ -55,7 +55,7 @@ class InstagramBot():
         '''
             This function is do the dinamic in the engadment group
         '''
-        count = 0
+        count = 1
         link_list = get_list()
         posts_liked = {}
 
@@ -70,17 +70,17 @@ class InstagramBot():
                 post = self.browser.find_elements_by_css_selector('._9AhH0')
                 if len(post) < 3: 
                     if len(post) == 0:
-                        print(str(count+1) + "----" + link + "----Errorrrrrr----")
+                        print(str(count) + "----" + link + "----Errorrrrrr----")
                         count +=1
                         continue
                     else: #if there is just one or two posts
                         post[0].click()
-                        posts_liked[str(count+1) + "--" + link] = self.browser.current_url
+                        posts_liked[str(count) + "--" + link] = self.browser.current_url
                         time.sleep(2)
                 else:
-                    postn = np.random.randint(0,2)
-                    post[postn].click()
-                    posts_liked[str(count+1) + "--" + link] = self.browser.current_url
+                    #postn = np.random.randint(0,2)
+                    post[0].click()
+                    posts_liked[str(count) + "--" + link] = self.browser.current_url
                     time.sleep(2)
 
             #find heart and like
@@ -97,7 +97,7 @@ class InstagramBot():
             except:
                 print("already save")
 
-            #find send and send to someone
+            '''#find send and send to someone
             share = self.browser.find_element_by_css_selector('._8-yf5[aria-label="Share Post"]')
             share.click()
             time.sleep(2)
@@ -115,11 +115,13 @@ class InstagramBot():
             dest.click()
             #find send_button
             send_b = self.browser.find_element_by_css_selector('.sqdOP.yWX7d.y3zKF.cB_4K')
-            send_b.click()
+            send_b.click()'''
             
             #increase count
-            print(str(count+1) + "----" + link)
+            print(str(count) + "----" + link)
             count += 1
+            #save post
+            liked_posts(lista = posts_liked)
         print('__________________FIN________________________')
         print("He interactuado con {} publicaciones".format(count))
         save_liked_posts(lista = posts_liked)
@@ -146,7 +148,7 @@ def save_liked_posts(lista):
         for page, p in lista.items():
             file.write(page + "--" + p + "\n")
 
-    
-
-
-       
+def liked_posts(lista):
+    with open("temp_liked.txt","w+") as file:
+        for page, p in lista.items():
+            file.write(page + "--" + p + "\n")

@@ -16,5 +16,6 @@ lista.append("#idiliodigital")
 print(lista)
 
 with open('your_file.txt', 'w') as f:
+    f.truncate(0)
     for item in lista:
         f.write("%s\n" % item)
