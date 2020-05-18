@@ -15,7 +15,8 @@ lista = (rang1.sample(14).tolist() + rang2.sample(10).tolist() + rang3.sample(5)
 lista.append("#idiliodigital")
 print(lista)
 
-with open('your_file.txt', 'w') as f:
+with open('hashtag_list.txt', 'w') as f:
     f.truncate(0)
     for item in lista:
         f.write("%s\n" % item)
+
