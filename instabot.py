@@ -95,6 +95,7 @@ class Instaengagement(InstaBot):
 
         #start dinamic
         for link in link_list:
+            print("test"+link)
             self.browser.get(link)
             time.sleep(2)
            
@@ -102,17 +103,12 @@ class Instaengagement(InstaBot):
             if '/p/' not in link:
                 #Verify if a post exists
                 post = self.browser.find_elements_by_css_selector('._9AhH0')
-                if len(post) < 3: 
-                    if len(post) == 0:
-                        print(str(count) + "----" + link + "----Errorrrrrr----")
-                        count +=1
-                        continue
-                    else: #if there is just one or two posts
-                        post[0].click()
-                        posts_liked[str(count) + "--" + link] = self.browser.current_url
-                        time.sleep(2)
-                else:
-                    #postn = np.random.randint(0,2)
+                #Check if there is a post.
+                if len(post) == 0:
+                    print(str(count) + "----" + link + "----Error no Posts----")
+                    count +=1
+                    continue
+                else: 
                     post[0].click()
                     posts_liked[str(count) + "--" + link] = self.browser.current_url
                     time.sleep(2)
@@ -142,7 +138,7 @@ class Instaengagement(InstaBot):
             self.liked_posts(lista = posts_liked)
         print('__________________FIN________________________')
         print("He interactuado con {} publicaciones".format(count))
-        save_liked_posts(lista = posts_liked)
+        self.save_liked_posts(lista = posts_liked)
     
     
     def get_list(self, file='posts_list.txt'):
