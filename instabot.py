@@ -143,7 +143,7 @@ class Instaengagement(InstaBot):
     
     def get_list(self, file='posts_list.txt'):
         link_list = []
-        with open(file) as f:
+        with open(file, errors='ignore') as f:
             text = f.read()
             href_regex = "[Ii]nstagram\.com\S*"
             links = re.findall(href_regex, text)
