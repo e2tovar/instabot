@@ -117,6 +117,7 @@ class Instaengagement(InstaBot):
             try:
                 heart = self.browser.find_element_by_css_selector('._8-yf5[aria-label="Like"]')
                 heart.click()
+                time.sleep(1)
             except:
                 print("already liked")
         
@@ -124,6 +125,7 @@ class Instaengagement(InstaBot):
             try:
                 save = self.browser.find_element_by_css_selector('._8-yf5[aria-label="Save"]')
                 save.click()
+                time.sleep(1)
             except:
                 print("already save")
 
@@ -144,7 +146,7 @@ class Instaengagement(InstaBot):
     def get_list(self, file='posts_list.txt'):
         link_list = []
         with open(file, errors='ignore') as f:
-            text = f.read()
+            text = f.read() 
             href_regex = "[Ii]nstagram\.com\S*"
             links = re.findall(href_regex, text)
             
@@ -186,7 +188,3 @@ class Instaengagement(InstaBot):
         #find send_button
         send_b = self.browser.find_element_by_css_selector('.sqdOP.yWX7d.y3zKF.cB_4K')
         send_b.click()
-
-    
-    
-
