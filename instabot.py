@@ -100,9 +100,13 @@ class Instaengagement(InstaBot):
 
         #start dinamic
         for link in link_list:
-            print("test"+link)
+            #print("test "+link) --- debug
             self.browser.get(link)
             time.sleep(2)
+
+            #increase count
+            print(str(count) + "----" + link)
+            count += 1
            
             #chek if is an account or a post, if not click on a post
             if '/p/' not in link:
@@ -118,33 +122,44 @@ class Instaengagement(InstaBot):
                     posts_liked[str(count) + "--" + link] = self.browser.current_url
                     time.sleep(2)
 
-            
-            #find save and save
-            
-            save = self.browser.find_element_by_xpath('/html/body/div[4]/div[2]/div/article/div/div[3]/section[1]/span[3]/div/div/button')
-            save.click()
-            time.sleep(2)
-        
-            #print("already save")
-
             #find heart and like
             try:
-                heart = self.browser.find_element_by_css_selector('._8-yf5[aria-label="Like"]')
-                heart.click()
+                heart = self.browser.find_elements_by_xpath("//section/span/button/div/span[*[local-name()='svg']/@aria-label='Like']")
+                
+                if len(heart) > 0:
+                    heart[0].click() 
+                    status = 'Done'                                               
+                else:
+                    status = 'It Was Liked before'
+                #status print
+                print('like --> ', status)
                 time.sleep(2)
             except:
-                print("already liked")
-        
+                print("There was a problem liking")
+            
+            #find save and save
+            try:                
+                check_save = self.browser.find_elements_by_xpath("//section/span/div/div/button/div[*[local-name()='svg']/@aria-label='Save']")
+                if len(check_save) > 0 :
+                    save = self.browser.find_element_by_xpath('/html/body/div[4]/div[2]/div/article/div/div[3]/section[1]/span[3]/div/div/button')
+                    save.click()
+                    status = 'Done'
+                    time.sleep(2)
+                else:
+                    status = 'It Was Saved before'
+                #status print
+                print('save --> ', status)
+            except:
+                print("There was a problem saving")
 
             #send
             if send:
                 self.sendto(send)
+                print('save --> Done')
                 time.sleep(3)
             
-            #increase count
-            print(str(count) + "----" + link)
-            count += 1
-            #save post
+            
+            #save post to txt
             self.liked_posts(lista = posts_liked)
         print('__________________FIN________________________')
         print("He interactuado con {} publicaciones".format(count))
