@@ -16,18 +16,23 @@ class InstaBot():
         """
         #set browser to english language
         self.browserProfile = webdriver.ChromeOptions()
+        self.browserProfile.add_argument("--incognito")
+
         self.browserProfile.add_experimental_option('prefs', {'intl.accept_languages': 'en,en_US'})
         self.browser = webdriver.Chrome('chromedriver.exe', chrome_options=self.browserProfile)
+        self.browser.implicitly_wait(5)
+        self.browser.get('https://www.instagram.com/accounts/login/')
         #other attributes
         self.user = user
         self.password = password
+
+        #Sign
         self.signIn()
         
 
     def signIn(self):
-        """This function signs into an account on instagram"""   
+        """This function signs into an account on instagram"""          
         
-        self.browser.get('https://www.instagram.com/accounts/login/')
 
         # check if there is another acouunt previusly created, 
         # becouse instagram login page get the option to enter directly with that account
@@ -113,25 +118,28 @@ class Instaengagement(InstaBot):
                     posts_liked[str(count) + "--" + link] = self.browser.current_url
                     time.sleep(2)
 
+            
+            #find save and save
+            
+            save = self.browser.find_element_by_xpath('/html/body/div[4]/div[2]/div/article/div/div[3]/section[1]/span[3]/div/div/button')
+            save.click()
+            time.sleep(2)
+        
+            #print("already save")
+
             #find heart and like
             try:
                 heart = self.browser.find_element_by_css_selector('._8-yf5[aria-label="Like"]')
                 heart.click()
-                time.sleep(1)
+                time.sleep(2)
             except:
                 print("already liked")
         
-            #find save and save
-            try:
-                save = self.browser.find_element_by_css_selector('._8-yf5[aria-label="Save"]')
-                save.click()
-                time.sleep(1)
-            except:
-                print("already save")
 
             #send
             if send:
                 self.sendto(send)
+                time.sleep(3)
             
             #increase count
             print(str(count) + "----" + link)
@@ -146,7 +154,7 @@ class Instaengagement(InstaBot):
     def get_list(self, file='posts_list.txt'):
         link_list = []
         with open(file, errors='ignore') as f:
-            text = f.read() 
+            text = f.read().lower()
             href_regex = "[Ii]nstagram\.com\S*"
             links = re.findall(href_regex, text)
             
