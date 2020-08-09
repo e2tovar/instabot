@@ -2,9 +2,9 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
 import re
-import numpy as np
+import random
 
-class InstaBot():
+class Botsito():
     """This class creates a bot for istagram
     """    
     def __init__(self, user, password):
@@ -22,13 +22,11 @@ class InstaBot():
         self.browser = webdriver.Chrome('chromedriver.exe', chrome_options=self.browserProfile)
         self.browser.implicitly_wait(5)
         self.browser.get('https://www.instagram.com/accounts/login/')
-        #other attributes
+        
+        #sign
         self.user = user
         self.password = password
-
-        #Sign
         self.signIn()
-        
 
     def signIn(self):
         """This function signs into an account on instagram"""          
@@ -41,7 +39,7 @@ class InstaBot():
         if (continueButton.text != 'Login'):
             print(continueButton.text)
             #Click on otra cuenta
-            time.sleep(2)
+            time.sleep(random.randint(2,4))
         
         emailInput = self.browser.find_elements_by_css_selector('form input')[0]
         passwordInput = self.browser.find_elements_by_css_selector('form input')[1]
@@ -49,35 +47,30 @@ class InstaBot():
         emailInput.send_keys(self.user)
         passwordInput.send_keys(self.password)
         passwordInput.send_keys(Keys.ENTER)
-        time.sleep(2)
+        time.sleep(random.randint(2,4))
     
     def followWithUsername(self, username):
         self.browser.get('https://www.instagram.com/' + username + '/')
-        time.sleep(2)
+        time.sleep(random.randint(2,4))
         followButton = self.browser.find_element_by_css_selector('button')
         if (followButton.text == 'Follow'):
             followButton.click()
-            time.sleep(2)
+            time.sleep(random.randint(2,4))
         else:
             print("You are already following this user")
     
-    def hashtagCount(self, hashtag):
-        """This function search for a hashtag
-         and count how many posts are in
-
-        Arguments:
-            hashtag {string} -- '#' + hashtag
-
-        Returns:
-            [string] -- hashtag count
-        """
-        self.browser.get('https://www.instagram.com/explore/tags/' + hashtag[1:] + '/') 
-        time.sleep(2)
-        hastag_count = self.browser.find_element_by_css_selector('.g47SY')
-        return hastag_count.text
+    def unfollowWithUsername(self, username):
+        self.browser.get('https://www.instagram.com/' + username + '/')
+        time.sleep(random.randint(2,4))
+        followButton = self.browser.find_element_by_css_selector('button')
+        if (followButton.text == 'Unfollow'):
+            followButton.click()
+            time.sleep(random.randint(2,4))
+        else:
+            print("You are not following this user")
     
 
-class Instaengagement(InstaBot):
+class Instaengagement(Botsito):
     """Defines an Instabot children for engagement, 
     needs a list
 
@@ -86,9 +79,9 @@ class Instaengagement(InstaBot):
         #other attributes
         self.egagefile = engagefile
         # Invoque constructor
-        InstaBot.__init__(self, user, password)
+        Botsito.__init__(self, user, password)
     
-    def flash(self, send=None):
+    def autoengage(self, send=None):
         """This function is do the dinamic in the engadment group
 
         Keyword Arguments:
@@ -102,7 +95,7 @@ class Instaengagement(InstaBot):
         for link in link_list:
             #print("test "+link) --- debug
             self.browser.get(link)
-            time.sleep(2)
+            time.sleep(random.randint(2,4))
 
             #increase count
             print(str(count) + "----" + link)
@@ -120,7 +113,7 @@ class Instaengagement(InstaBot):
                 else: 
                     post[0].click()
                     posts_liked[str(count) + "--" + link] = self.browser.current_url
-                    time.sleep(2)
+                    time.sleep(random.randint(2,4))
 
             #find heart and like
             try:
@@ -133,18 +126,18 @@ class Instaengagement(InstaBot):
                     status = 'It Was Liked before'
                 #status print
                 print('like --> ', status)
-                time.sleep(2)
+                time.sleep(random.randint(2,4))
             except:
                 print("There was a problem liking")
             
             #find save and save
-            try:                
+            try:              
                 check_save = self.browser.find_elements_by_xpath("//section/span/div/div/button/div[*[local-name()='svg']/@aria-label='Save']")
                 if len(check_save) > 0 :
-                    save = self.browser.find_element_by_xpath('/html/body/div[4]/div[2]/div/article/div/div[3]/section[1]/span[3]/div/div/button')
+                    save = self.browser.find_element_by_xpath('/html/body/div[4]/div[2]/div/article/div[3]/section[1]/span[3]/div/div/button')
                     save.click()
                     status = 'Done'
-                    time.sleep(2)
+                    time.sleep(random.randint(2,4))
                 else:
                     status = 'It Was Saved before'
                 #status print
@@ -155,8 +148,8 @@ class Instaengagement(InstaBot):
             #send
             if send:
                 self.sendto(send)
-                print('save --> Done')
-                time.sleep(3)
+                print('send --> Done')
+                time.sleep(random.randint(3,5))
             
             
             #save post to txt
@@ -170,7 +163,7 @@ class Instaengagement(InstaBot):
         link_list = []
         with open(file, errors='ignore') as f:
             text = f.read().lower()
-            href_regex = "[Ii]nstagram\.com\S*"
+            href_regex = r"[Ii]nstagram\.com\S*"
             links = re.findall(href_regex, text)
             
             for i, line in enumerate(links):
@@ -196,15 +189,15 @@ class Instaengagement(InstaBot):
         #find send and send to someone
         share = self.browser.find_element_by_css_selector('._8-yf5[aria-label="Share Post"]')
         share.click()
-        time.sleep(2)
+        time.sleep(random.randint(2,4))
         #find direct
         direct = self.browser.find_elements_by_xpath("//*[contains(text(), 'Share to Direct')]")
         direct[0].click()
-        time.sleep(2)
+        time.sleep(random.randint(2,4))
         #find input
         inp = self.browser.find_element_by_css_selector('input[name="queryBox"]')
         inp.send_keys(account)
-        time.sleep(2)
+        time.sleep(random.randint(2,4))
         #find destinity
         dest = self.browser.find_element_by_css_selector('._7UhW9.xLCgt.qyrsm.KV-D4.uL8Hv')
         dest.click()
