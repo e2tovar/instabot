@@ -27,6 +27,7 @@ class Botsito():
         self.user = user
         self.password = password
         self.signIn()
+        self.browser.get('https://www.instagram.com/' + self.user)
 
     def signIn(self):
         """This function signs into an account on instagram"""          
@@ -118,7 +119,6 @@ class Instaengagement(Botsito):
             #find heart and like
             try:
                 heart = self.browser.find_elements_by_xpath("//section/span/button/div/span[*[local-name()='svg']/@aria-label='Like']")
-                
                 if len(heart) > 0:
                     heart[0].click() 
                     status = 'Done'                                               
@@ -128,7 +128,7 @@ class Instaengagement(Botsito):
                 print('like --> ', status)
                 time.sleep(random.randint(2,4))
             except:
-                print("There was a problem liking")
+                print("There was a problem while liking")
             
             #find save and save
             try:              
@@ -162,16 +162,35 @@ class Instaengagement(Botsito):
     def get_list(self, file='posts_list.txt'):
         link_list = []
         with open(file, errors='ignore') as f:
-            text = f.read().lower()
+            text = f.read()
             href_regex = r"[Ii]nstagram\.com\S*"
             links = re.findall(href_regex, text)
             
-            for i, line in enumerate(links):
+            for line in links:
                 # add http
                 url = "https://www." + line
                 link_list.append(url.rstrip())
-                #print(str(i)+" "+url)
         return link_list
+
+    def sendto(self, account):
+        #find share button and click
+        share = self.browser.find_element_by_css_selector('._8-yf5[aria-label="Share Post"]')
+        share.click()
+        time.sleep(random.randint(2,4))
+        #find direct message
+        direct = self.browser.find_elements_by_xpath("//*[contains(text(), 'Share to Direct')]")
+        direct[0].click()
+        time.sleep(random.randint(2,4))
+        #find input and se account name
+        inp = self.browser.find_element_by_css_selector('input[name="queryBox"]')
+        inp.send_keys(account)
+        time.sleep(random.randint(2,4))
+        #find destiny account
+        dest = self.browser.find_element_by_css_selector('._7UhW9.xLCgt.qyrsm.KV-D4.uL8Hv')
+        dest.click()
+        #find send_button
+        send_b = self.browser.find_element_by_css_selector('.sqdOP.yWX7d.y3zKF.cB_4K')
+        send_b.click()
 
     def save_liked_posts(self, lista):
         print(lista)
@@ -184,23 +203,3 @@ class Instaengagement(Botsito):
         with open("temp_liked.txt","w+") as file:
             for page, p in lista.items():
                 file.write(page + "--" + p + "\n")
-    
-    def sendto(self, account):
-        #find send and send to someone
-        share = self.browser.find_element_by_css_selector('._8-yf5[aria-label="Share Post"]')
-        share.click()
-        time.sleep(random.randint(2,4))
-        #find direct
-        direct = self.browser.find_elements_by_xpath("//*[contains(text(), 'Share to Direct')]")
-        direct[0].click()
-        time.sleep(random.randint(2,4))
-        #find input
-        inp = self.browser.find_element_by_css_selector('input[name="queryBox"]')
-        inp.send_keys(account)
-        time.sleep(random.randint(2,4))
-        #find destinity
-        dest = self.browser.find_element_by_css_selector('._7UhW9.xLCgt.qyrsm.KV-D4.uL8Hv')
-        dest.click()
-        #find send_button
-        send_b = self.browser.find_element_by_css_selector('.sqdOP.yWX7d.y3zKF.cB_4K')
-        send_b.click()
