@@ -1,7 +1,7 @@
+/.gitignore
 /temp_liked.txt
 /liked.txt
 /ranhash.oy
 /hashtag.xlsx
 /test
 /instabot_script.ipynb
-/debug.log
